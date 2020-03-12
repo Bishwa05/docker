@@ -1,0 +1,18 @@
+Docker Compose
+
+	1. Install docker compose or check if it is already installed
+	docker-compose -v
+	
+	2. Create a docker compose file named as docker-compose.yml
+	
+	3. Check the validity of the file
+	docker-compose config
+	
+	4. Run the docker-compose.yml file
+	Docker-compose up -d
+	
+	5. Bring down the services.
+	docker-compose down
+	
+	6. Scale a service to multiple containers
+	docker-compose up -d --scale database=4

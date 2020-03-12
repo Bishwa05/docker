@@ -1,0 +1,116 @@
+Docker Swarm
+
+A swarm is a group of machines. That are running Docker and joined into a cluster.
+
+Docker swarm is a tool for container orchestration
+
+Eg,
+You have 100 containers
+
+You need to do
+	- Health check on every container.
+	- Ensure all containers are up on every system.
+	- Scaling the containers up or down depending on load
+	- Adding updates/changes to all containers.
+
+Orchestration - managing and controlling multiple docker containers on a single service
+Tools available: Docker Swarm, Kubernetes, Apache Mesos
+
+
+
+	1. Create Docker machines (to act as nodes for Docker Swarm) Create one machine as manager and others as workers 
+	docker-machine create --driver hyperv manager1 (windows)
+	docker-machine create --driver virtualbox manager1 (mac)
+	
+	To see how to connect your Docker Client to the Docker Engine running on this virtual machine, run: 
+	docker-machine env manager1
+	
+	
+ 2. Check machine created successfully 
+	docker-machine ls 
+	docker-machine ip manager1
+	
+	3. Create Worker machines
+	docker-machine create --driver virtualbox worker1 
+	docker-machine create --driver virtualbox worker2
+	
+	4. Ssh to docker machines
+	docker-machine ssh manager1
+	docker-machine ssh worker1
+	docker-machine ssh worker2
+	
+	5. Initialize Docker swarm (in manager1's machine)
+	docker swarm init --advertise-addr 192.168.99.100(manager1's ip address)
+	
+	
+	To add a worker to this swarm, run the following command:
+	
+	    docker swarm join --token SWMTKN-1-5u0k0ocxfufsou2ubohrqfz5bh0dsug803f7ekkfm0v95fjox2-8texzfqbuc79jkbbrn73km53a 192.168.99.100:2377
+	
+	To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+	
+	To check nodes
+		docker node ls
+	
+	6. Join the workers to swarm
+	To get the command we can run this
+	docker swarm join-token worker
+	
+	The command I got is, 
+	docker swarm join --token SWMTKN-1-5u0k0ocxfufsou2ubohrqfz5bh0dsug803f7ekkfm0v95fjox2-8texzfqbuc79jkbbrn73km53a 192.168.99.100:2377
+	This command to be executed in worker machines.
+	
+	To add another manager we can get command after running,
+	docker swarm join-token manager
+	
+	7. On manager run standard docker commands docker info check the swarm section no of manager, nodes etc Now check docker swarm command options docker swarm 
+	
+	 
+	8. Run containers on Docker Swarm 
+	docker service create --replicas 3 -p 80:80 --name serviceName nginx 
+	Check the status: 
+	docker service ls 
+	docker service ps serviceName 
+	Check the service running on all nodes 
+	Check on the browser by giving ip for all nodes
+	
+	9. Scale service up and down 
+	On manager node 
+	docker service scale serviceName=4
+	Verify the ps
+	docker service ps serviceName
+	
+	In worker machine check with 
+	docker ps
+	
+	Then docker service scale serviceName=5 then 2
+	
+	Inspecting Nodes (this command can run only on manager node) 
+		docker node inspect nodename
+		docker node inspect self
+		 docker node inspect worker1
+	
+	
+	10. Update service (In Manager)
+docker service update --image imagename:version web 
+docker service update --image nginx:1.14.0 serviceName
+
+	11. Shutdown node 
+	docker node update --availability drain worker1
+	
+	12. Remove service 
+	docker service rm serviceName
+	To leave the swarm - To be executed in each machine.
+		docker swarm leave
+	To stop the machine - To be executed outside of manager and worker
+		docker-machine stop machineName
+		docker-machine stop manager1
+		docker-machine stop worker1
+		docker-machine stop worker2
+	
+	To remove the machine -To be executed outside of manager and worker
+		docker-machine rm machineName
+		docker-machine rm manager1
+		docker-machine rm worker1
+		docker-machine rm. worker2
+		

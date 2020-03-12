@@ -1,0 +1,33 @@
+To pull an image
+	docker pull image_name
+
+To stop a docker container
+	docker stop container_name
+
+To remove a docker container
+	docker rm container_name
+
+To remove an image
+	docker rmi image_name
+
+To see docker logs
+	docker logs -f --tail 1 828be2df2b68
+	
+To sh into a docker container
+	docker exec -it container_id sh
+	docker exec -it 828be2df2b68 sh
+
+To create a docker image
+docker build -t image_name:tag_name . -> try to create the image, on the path of dockerfile
+
+
+docker run  --publish 8090:8080 hello_docker:v1
+
+docker tag hello_docker:v1 bishwa05/hello_docker:v1
+
+To push the docker image
+	docker login
+	docker push bishwa05/hello_docker:v1
+
+To run docker image with env variable
+	docker run -e "env_var_name=val"
